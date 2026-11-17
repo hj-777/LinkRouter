@@ -50,5 +50,19 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
+        <!-- 카톡 인앱 브라우저 자동 건너뛰기 -->
+        <service
+            android:name=".KakaoSkipService"
+            android:exported="true"
+            android:label="@string/a11y_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/kakao_skip" />
+        </service>
     </application>
 </manifest>
