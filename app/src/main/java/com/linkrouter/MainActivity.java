@@ -1,6 +1,9 @@
 package com.linkrouter;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.widget.Toast;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -48,7 +51,17 @@ public class MainActivity extends Activity {
         });
         root.addView(test, wide());
 
+        Button copy = new Button(this);
+        copy.setText("문제 해결 정보 복사");
+        copy.setOnClickListener(v -> {
+            ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            cm.setPrimaryClip(ClipData.newPlainText("linkrouter", debug.getText()));
+            Toast.makeText(this, "복사했어요. Claude에게 붙여넣어 주세요", Toast.LENGTH_SHORT).show();
+        });
+        root.addView(copy, wide());
+
         debug = new TextView(this);
+        debug.setTextIsSelectable(true);
         debug.setTextSize(12);
         debug.setPadding(0, pad, 0, 0);
         root.addView(debug);
@@ -63,7 +76,10 @@ public class MainActivity extends Activity {
         super.onResume();
         String last = getSharedPreferences(KakaoSkipService.PREFS, MODE_PRIVATE)
                 .getString(KakaoSkipService.KEY_LAST_CLASS, "(아직 없음)");
-        debug.setText("문제 해결용 — 마지막으로 본 카톡 화면:\n" + last);
+        String dump = getSharedPreferences(KakaoSkipService.PREFS, MODE_PRIVATE)
+                .getString(KakaoSkipService.KEY_DUMP, "(없음)");
+        debug.setText("문제 해결용 — 마지막으로 본 카톡 화면:\n" + last
+                + "\n\n자동 넘기기 실패 기록:\n" + dump);
     }
 
     private Button button(String label, String action) {
